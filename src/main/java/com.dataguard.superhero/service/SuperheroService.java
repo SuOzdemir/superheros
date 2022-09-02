@@ -12,4 +12,6 @@ public interface SuperheroService {
     Superhero createSuperhero(SuperheroDTO superheroRequestDTO);
 
     List<SuperheroDTO> getAllSuperheroes();
+
+    List<Superhero> getAllSuperheroesWithIDS();
 }

@@ -11,5 +11,4 @@ import javax.persistence.Table;
 @Table(name = "superhero_assosiations")
 @Entity
 public class SuperheroAssociation extends BaseAttribute{
-
 }

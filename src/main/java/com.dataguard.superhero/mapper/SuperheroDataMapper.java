@@ -8,6 +8,7 @@ import com.dataguard.superhero.dao.entity.SuperheroWeapon;
 import com.dataguard.superhero.web.controller.requestDTO.SuperheroDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -47,5 +48,11 @@ public class SuperheroDataMapper {
               .collect ( Collectors.joining ( "," ) ) );
 
       return superheroDTO;
+   }
+
+   public List<SuperheroDTO> convertDTOAsList(List<Superhero> superheroList) {
+      return superheroList.stream ( )
+              .map ( (superhero) -> createDTOfromSuperhero ( superhero ) )
+              .collect ( Collectors.toList ( ) );
    }
 }

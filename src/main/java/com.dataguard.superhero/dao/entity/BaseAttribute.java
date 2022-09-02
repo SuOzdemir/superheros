@@ -1,15 +1,21 @@
 package com.dataguard.superhero.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.beans.ConstructorProperties;
 import java.util.Objects;
 
 @Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,4 +49,8 @@ public class BaseAttribute {
         return Objects.hash ( id, superhero );
     }
 
+//    public BaseAttribute( int id,  String name) {
+//        this.id = id;
+//        this.name = name;
+//    }
 }

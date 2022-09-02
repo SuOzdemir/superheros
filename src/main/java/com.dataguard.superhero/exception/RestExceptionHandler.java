@@ -5,6 +5,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -33,5 +34,14 @@ public class RestExceptionHandler {
         }
         return restErrorResponse;
     }
-
+    @ResponseBody
+    @ExceptionHandler(value = {SuperheroNotFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorDTO handleException(SuperheroNotFoundException orderNotFoundException) {
+        log.error(orderNotFoundException.getMessage(), orderNotFoundException);
+        return ErrorDTO.builder()
+                .code(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .message(orderNotFoundException.getMessage())
+                .build();
+    }
 }

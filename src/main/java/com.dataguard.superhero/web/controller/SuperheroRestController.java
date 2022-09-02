@@ -14,13 +14,13 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/superheros",
+@RequestMapping(value = "/api/v1",
         produces = "application/vnd.api.v1+json")
 public class SuperheroRestController {
 
     private final SuperheroService superheroService;
 
-    @PostMapping
+    @PostMapping (value="/superhero")
     public ResponseEntity<Superhero> createSuperhero(@RequestBody SuperheroDTO
                                                              superheroRequestDTO) {
         log.info ( "Creating superhero with name: {}", superheroRequestDTO.getAlias ( ) );
@@ -28,10 +28,18 @@ public class SuperheroRestController {
         return ResponseEntity.status ( HttpStatus.CREATED ).body ( superhero );
     }
 
-    @GetMapping
+    @GetMapping (value="/superheros")
     public ResponseEntity< List<SuperheroDTO> > getAllSuperheroes() {
         log.info ( " Getting all superheros is requested ");
-        List<SuperheroDTO> superheroList = superheroService.getAllSuperheroes ();
+        List<SuperheroDTO> superheroDTOList = superheroService.getAllSuperheroes ();
+        return ResponseEntity.status ( HttpStatus.OK ).body ( superheroDTOList );
+    }
+    @GetMapping (value="/superheros-with-id")
+    public ResponseEntity< List<Superhero> > getAllSuperheroesWithIDs() {
+        log.info ( " Getting all superheros with IDs is requested ");
+        List<Superhero> superheroList = superheroService.getAllSuperheroesWithIDS ();
         return ResponseEntity.status ( HttpStatus.OK ).body ( superheroList );
     }
+
+
 }
