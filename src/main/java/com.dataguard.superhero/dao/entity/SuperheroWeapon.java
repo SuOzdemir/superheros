@@ -3,8 +3,8 @@ package com.dataguard.superhero.dao.entity;
 import javax.persistence.*;
 
 import lombok.*;
-
-@Builder
+import lombok.experimental.SuperBuilder;
+@SuperBuilder
 @AllArgsConstructor
 @Table(name = "superhero_weapons")
 @Entity

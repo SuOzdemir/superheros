@@ -1,15 +1,16 @@
 package com.dataguard.superhero.dao.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -17,8 +18,8 @@ import java.util.List;
 public class Superhero {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "Id")
     private long id;
 
     @Column(name = "alias")
@@ -31,13 +32,30 @@ public class Superhero {
     private String origin;
 
     @OneToMany(mappedBy = "superhero", cascade = CascadeType.ALL)
-    private List<SuperheroWeapon> weapons;
+    @Singular("weapon")
+    private List<SuperheroWeapon> weaponList;
 
     @OneToMany(mappedBy = "superhero", cascade = CascadeType.ALL)
-    private List<SuperheroAssociation> associations;
+    @Singular("association")
+    private List<SuperheroAssociation> associationList;
 
     @OneToMany(mappedBy = "superhero", cascade = CascadeType.ALL)
-    private List<SuperheroPower> powers;
+    @Singular("power")
+    private List<SuperheroPower> powerList;
 
+    public void setWeaponList(List<String> strList) {
+        if (strList == null) return;
+        this.weaponList = strList.stream ( ).map ( (s) -> SuperheroWeapon.builder ( ).name ( s ).superhero ( this ).build ( ) ).collect ( Collectors.toList ( ) );
+    }
+
+    public void setPowerList(List<String> strList) {
+        if (strList == null) return;
+        this.powerList = strList.stream ( ).map ( (s) -> SuperheroPower.builder ( ).name ( s ).superhero ( this ).build ( ) ).collect ( Collectors.toList ( ) );
+    }
+
+    public void setAssociationList(List<String> strList) {
+        if (strList == null) return;
+        this.associationList = strList.stream ( ).map ( (s) -> SuperheroAssociation.builder ( ).name ( s ).superhero ( this ).build ( ) ).collect ( Collectors.toList ( ) );
+    }
 
 }
