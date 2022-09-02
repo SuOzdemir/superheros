@@ -6,6 +6,8 @@ import com.dataguard.superhero.web.controller.requestDTO.SuperheroDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +31,14 @@ public class ApplicationTests {
     ObjectMapper om = new ObjectMapper ( );
     @Autowired
     MockMvc mockMvc;
+    List<SuperheroDTO>  testData ;
+    @BeforeEach
+    public void setup() {
+        testData = getTestData();
+    }
 
     @Test
     public void testGetSuperheros() throws Exception {
-
-        List<SuperheroDTO>  testData = getTestData ( );
 
         List<Superhero> expected = new ArrayList<> ( );
 
@@ -48,6 +53,11 @@ public class ApplicationTests {
             // expected.add ( response );
         }
         System.out.println ("----------------------------------------------------------------------------" );
+
+        mockMvc.perform ( get ( "/api/v1/superhero/{id}" ,1) )
+                .andDo ( print ( ) ).andExpect ( status ( ).isOk ( ) )
+                .andReturn();
+
 //        Collections.sort ( expected, Comparator.comparing ( Superhero::getId ) );
 //
 //        //without filter
