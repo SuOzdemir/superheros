@@ -87,7 +87,8 @@ public class ApplicationTests {
     public void testGetSuperhero_withID_ShouldReturn_NOT_FOUND() throws Exception {
         Long dummy = 999L;
         mockMvc.perform ( get ( SUPERHEROS_ID_PATH, dummy ) )
-                .andDo ( print ( ) ).andExpect ( status ( ).isNotFound ( ) )
+                //.andDo ( print ( ) )
+                .andExpect ( status ( ).isNotFound ( ) )
                 .andReturn ( );
     }
 
@@ -122,7 +123,8 @@ public class ApplicationTests {
         String dummyType = "weapon3";
         mockMvc.perform ( post ( SUPERHEROS_ID_ATTRIBUTE_PATH, 1L, dummyType, "run-fast" )
                         .contentType ( "application/json" ) )
-                .andDo ( print ( ) ).andExpect ( status ( ).is4xxClientError ( ) )
+                //.andDo ( print ( ) )
+                .andExpect ( status ( ).is4xxClientError ( ) )
                 .andReturn ( );
     }
 
