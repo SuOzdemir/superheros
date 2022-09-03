@@ -5,7 +5,6 @@ import com.dataguard.superhero.dao.repository.SuperheroRepository;
 import com.dataguard.superhero.exception.SuperheroNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.expression.spel.ast.MethodReference;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.Optional;
 public class SuperheroDao {
     private final SuperheroRepository superheroRepository;
 
-    public Superhero createSuperhero(Superhero superhero) {
+    public Superhero saveSuperhero(Superhero superhero) {
         return superheroRepository.save ( superhero );
     }
 
@@ -30,7 +29,7 @@ public class SuperheroDao {
 
     public Superhero getSuperHeroByNameOrAlias(String name, String alias) {
 
-        Optional<Superhero> optionalSuperhero = Optional.ofNullable ( null );
+        Optional<Superhero> optionalSuperhero = Optional.empty ( );
 
         if (Strings.isEmpty ( name ) && !Strings.isEmpty ( alias ))
             optionalSuperhero = superheroRepository.findByName ( name );

@@ -2,16 +2,17 @@ package com.dataguard.superhero.service.impl;
 
 import com.dataguard.superhero.dao.SuperheroDao;
 import com.dataguard.superhero.dao.entity.Superhero;
-import com.dataguard.superhero.exception.CustomInvalidArgumentException;
 import com.dataguard.superhero.exception.SuperheroNotFoundException;
 import com.dataguard.superhero.mapper.SuperheroDataMapper;
 import com.dataguard.superhero.service.SuperheroService;
+import com.dataguard.superhero.web.SuperheroAttributeType;
 import com.dataguard.superhero.web.controller.requestDTO.SuperheroDTO;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 
@@ -20,12 +21,14 @@ import java.util.List;
 public class SuperheroServiceImpl implements SuperheroService {
 
     public final SuperheroDao superheroDao;
-    public final SuperheroDataMapper dataMapper;
+    public final SuperheroDataMapper mapper;
 
     @Override
     public Superhero createSuperhero(SuperheroDTO superheroRequestDTO) {
-        Superhero superhero = dataMapper.createSuperHeroFromRequestDTO ( superheroRequestDTO );
-        return superheroDao.createSuperhero ( superhero );
+
+        Superhero superhero = mapper.createSuperHeroFromRequestDTO ( superheroRequestDTO );
+
+        return superheroDao.saveSuperhero ( superhero );
     }
 
     @Override
@@ -35,7 +38,7 @@ public class SuperheroServiceImpl implements SuperheroService {
 
         emptyCheck ( superheroList );
 
-        return dataMapper.convertDTOAsList( superheroList );
+        return mapper.convertDTOAsList ( superheroList );
 
     }
 
@@ -59,12 +62,24 @@ public class SuperheroServiceImpl implements SuperheroService {
     @Override
     public Superhero getSuperheroByNameOrAlias(String name, String alias) {
 
-
-        if(Strings.isEmpty (name) && Strings.isEmpty (alias))
-                throw new CustomInvalidArgumentException (" At least one parameter is required");
+        if (Strings.isEmpty ( name ) && Strings.isEmpty ( alias ))
+            throw new InvalidParameterException ( " At least one parameter is required" );
 
         return superheroDao.getSuperHeroByNameOrAlias ( name, alias );
 
+    }
+
+    @Override
+    public SuperheroDTO addAttributeSuperhero(Long id, String typeStr, String name) {
+
+        SuperheroAttributeType type = SuperheroAttributeType.findByName ( typeStr )
+                .orElseThrow ( () -> new InvalidParameterException ( "type parameter is wrong " + typeStr ) );
+
+        Superhero superhero = getSuperheroById ( id );
+
+        superhero.addAttributeInDifferentType ( type, name );
+
+        return mapper.createDTOfromSuperhero ( superheroDao.saveSuperhero ( superhero ) );
     }
 
     private void emptyCheck(List<Superhero> superheroList) {

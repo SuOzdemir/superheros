@@ -18,4 +18,6 @@ public interface SuperheroService {
     Superhero getSuperheroById(Long id);
 
     Superhero getSuperheroByNameOrAlias(String name, String alias);
+
+    SuperheroDTO addAttributeSuperhero(Long id, String type, String name);
 }

@@ -2,6 +2,8 @@ package com.dataguard.superhero.web.controller;
 
 import com.dataguard.superhero.dao.entity.Superhero;
 import com.dataguard.superhero.service.SuperheroService;
+import com.dataguard.superhero.validation.Type;
+import com.dataguard.superhero.web.SuperheroAttributeType;
 import com.dataguard.superhero.web.controller.requestDTO.SuperheroDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -78,6 +84,22 @@ public class SuperheroRestController {
         log.info ( " Getting all superheros with IDs is requested ");
         List<Superhero> superheroList = superheroService.getAllSuperheroesWithIDS ();
         return ResponseEntity.status ( HttpStatus.OK ).body ( superheroList );
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Superhero.class)
+//                            , examples = {@ExampleObject(value = BASE_SUCCESS_RESPONSE_OK)}
+                    )})
+    })
+
+    @PostMapping (value="/superhero/{id}/{type}/{name}")
+    public ResponseEntity< SuperheroDTO> addAttributeSuperhero( @NotNull @PathVariable Long id,
+                                                                         @PathVariable  @Valid @Type String type,
+                                                                        @NotNull @PathVariable String name) {
+        log.info ( " To Superhero with id: {} , Adding \"{}\"  to {}s list is requested ",id,name,type);
+        SuperheroDTO superheroDTO = superheroService.addAttributeSuperhero ( id,type, name);
+        return ResponseEntity.status ( HttpStatus.OK ).body ( superheroDTO );
     }
 
 

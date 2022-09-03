@@ -1,9 +1,12 @@
 package com.dataguard.superhero.dao.entity;
 
+import com.dataguard.superhero.web.SuperheroAttributeType;
 import com.fasterxml.jackson.annotation.*;
 import lombok.*;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,9 +27,11 @@ public class Superhero {
     private long id;
 
     @Column(name = "alias",unique=true)
+    @NotNull
     private String alias;
 
     @Column(name = "name",unique=true)
+    @NotNull
     private String name;
 
     @Column(name = "origin")
@@ -45,18 +50,43 @@ public class Superhero {
     private List<SuperheroPower> powerList;
 
     public void setWeaponList(List<String> strList) {
-        if (strList == null) return;
-        this.weaponList = strList.stream ( ).map ( (s) -> SuperheroWeapon.builder ( ).name ( s ).superhero ( this ).build ( ) ).collect ( Collectors.toList ( ) );
+        if (CollectionUtils.isEmpty ( strList)) return;
+        this.weaponList = strList.stream ( ).map ( this::weaponFrom ).collect ( Collectors.toList ( ) );
     }
 
     public void setPowerList(List<String> strList) {
-        if (strList == null) return;
-        this.powerList = strList.stream ( ).map ( (s) -> SuperheroPower.builder ( ).name ( s ).superhero ( this ).build ( ) ).collect ( Collectors.toList ( ) );
+        if (CollectionUtils.isEmpty ( strList)) return;
+        this.powerList = strList.stream ( ).map ( this::powerFrom ).collect ( Collectors.toList ( ) );
     }
 
     public void setAssociationList(List<String> strList) {
-        if (strList == null) return;
-        this.associationList = strList.stream ( ).map ( (s) -> SuperheroAssociation.builder ( ).name ( s ).superhero ( this ).build ( ) ).collect ( Collectors.toList ( ) );
+        if (CollectionUtils.isEmpty ( strList)) return;
+        this.associationList = strList.stream ( ).map ( this::associationFrom ).collect ( Collectors.toList ( ) );
     }
 
+    public void addAttributeInDifferentType(SuperheroAttributeType type, String nameParam) {
+        switch (type) {
+            case ASSOCIATION:
+                this.associationList.add ( associationFrom ( nameParam ) );
+                break;
+            case WEAPON:
+                this.weaponList.add ( weaponFrom ( nameParam ) );
+                break;
+            case POWER:
+                this.powerList.add ( powerFrom ( nameParam ) );
+                break;
+        }
+    }
+
+    private SuperheroPower powerFrom(String name) {
+        return SuperheroPower.builder ( ).name ( name ).superhero ( this ).build ( );
+    }
+
+    private SuperheroWeapon weaponFrom(String name) {
+        return SuperheroWeapon.builder ( ).name ( name ).superhero ( this ).build ( );
+    }
+
+    private SuperheroAssociation associationFrom(String name) {
+        return SuperheroAssociation.builder ( ).name ( name ).superhero ( this ).build ( );
+    }
 }

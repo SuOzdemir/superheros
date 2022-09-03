@@ -54,19 +54,33 @@ public class ApplicationTests {
         }
         System.out.println ("----------------------------------------------------------------------------" );
 
-
-        mockMvc.perform ( get ( "/api/v1/superhero/{id}" ,"1") )
-                .andDo ( print ( ) ).andExpect ( status ( ).isOk ( ) )
+//
+//        mockMvc.perform ( get ( "/api/v1/superhero/{id}" ,"1") )
+//                .andDo ( print ( ) ).andExpect ( status ( ).isOk ( ) )
+//                .andReturn();
+//
+//        mockMvc.perform ( get ( "/api/v1/superhero/{id}" ,"ş") )
+//                .andDo ( print ( ) ).andExpect ( status ( ).isInternalServerError () )
+//                .andReturn();
+//
+//
+//        mockMvc.perform ( get ( "/api/v1/superhero/{id}" ,111) )
+//                .andDo ( print ( ) ).andExpect ( status ( ).isNotFound () )
+//                .andReturn();
+//
+        mockMvc.perform ( post ( "/api/v1/superhero/{id}/{type}/{name}",1,"weapone","run-fast" )
+                        .contentType ( "application/json" ))
+                .andDo ( print ( ) ).andExpect ( status ( ).is4xxClientError ( ) )
                 .andReturn();
 
-        mockMvc.perform ( get ( "/api/v1/superhero/{id}" ,"ş") )
-                .andDo ( print ( ) ).andExpect ( status ( ).isInternalServerError () )
+        mockMvc.perform ( post ( "/api/v1/superhero/{id}/{type}/{name}",1,"weapone","run-fast" )
+                        .contentType ( "application/json" ))
+                .andDo ( print ( ) ).andExpect ( status ( ).is4xxClientError ( ) )
                 .andReturn();
-
-
-        mockMvc.perform ( get ( "/api/v1/superhero/{id}" ,111) )
-                .andDo ( print ( ) ).andExpect ( status ( ).isNotFound () )
-                .andReturn();
+//        mockMvc.perform ( post ( "/api/v1/superhero/{id}/{type}/{name}",1,"weapon","run-fast" )
+//                        .contentType ( "application/json" ))
+//                .andDo ( print ( ) ).andExpect ( status ( ).isOk ( ) )
+//                .andReturn();
 
 //        Collections.sort ( expected, Comparator.comparing ( Superhero::getId ) );
 //
@@ -78,12 +92,12 @@ public class ApplicationTests {
 
 
         //     AssertEqualsForExpectedLists ( expected, actualRecords );
-
-        mockMvc.perform ( get ( "/api/v1/superheros-with-id" ) )
-                .andDo ( print ( ) ).andExpect ( status ( ).isOk ( ) );
-
-        mockMvc.perform ( get ( "/api/v1/superheros" ) )
-                .andDo ( print ( ) ).andExpect ( status ( ).isOk ( ) );
+//
+//        mockMvc.perform ( get ( "/api/v1/superheros-with-id" ) )
+//                .andDo ( print ( ) ).andExpect ( status ( ).isOk ( ) );
+//
+//        mockMvc.perform ( get ( "/api/v1/superheros" ) )
+//                .andDo ( print ( ) ).andExpect ( status ( ).isOk ( ) );
 
     }
 
