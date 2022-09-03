@@ -4,8 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,16 +13,12 @@ import java.util.stream.Collectors;
 @Getter
 public class SuperheroDTO {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     private String alias;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     private String name;
 
-    @NotNull
-    @NotEmpty
     private String origin;
 
     @Singular("weapon")

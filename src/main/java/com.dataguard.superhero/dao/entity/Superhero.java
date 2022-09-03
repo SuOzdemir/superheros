@@ -1,14 +1,12 @@
 package com.dataguard.superhero.dao.entity;
 
 import com.dataguard.superhero.web.SuperheroAttributeType;
-import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Builder
@@ -26,12 +24,12 @@ public class Superhero {
     @Column(name = "Id")
     private long id;
 
-    @Column(name = "alias",unique=true)
-    @NotNull
+    @Column(name = "alias", unique = true)
+    @NotBlank
     private String alias;
 
-    @Column(name = "name",unique=true)
-    @NotNull
+    @Column(name = "name", unique = true)
+    @NotBlank
     private String name;
 
     @Column(name = "origin")
