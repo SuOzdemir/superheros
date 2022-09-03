@@ -14,4 +14,8 @@ public interface SuperheroService {
     List<SuperheroDTO> getAllSuperheroes();
 
     List<Superhero> getAllSuperheroesWithIDS();
+
+    Superhero getSuperheroById(Long id);
+
+    Superhero getSuperheroByNameOrAlias(String name, String alias);
 }

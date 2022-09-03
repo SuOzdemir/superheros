@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Entity
 @Table(name = "superheros")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,    property = "id")
 public class Superhero {
 
     @Id
@@ -22,10 +23,10 @@ public class Superhero {
     @Column(name = "Id")
     private long id;
 
-    @Column(name = "alias")
+    @Column(name = "alias",unique=true)
     private String alias;
 
-    @Column(name = "name")
+    @Column(name = "name",unique=true)
     private String name;
 
     @Column(name = "origin")

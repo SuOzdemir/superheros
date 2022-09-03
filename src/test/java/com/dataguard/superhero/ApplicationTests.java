@@ -54,8 +54,18 @@ public class ApplicationTests {
         }
         System.out.println ("----------------------------------------------------------------------------" );
 
-        mockMvc.perform ( get ( "/api/v1/superhero/{id}" ,1) )
+
+        mockMvc.perform ( get ( "/api/v1/superhero/{id}" ,"1") )
                 .andDo ( print ( ) ).andExpect ( status ( ).isOk ( ) )
+                .andReturn();
+
+        mockMvc.perform ( get ( "/api/v1/superhero/{id}" ,"ş") )
+                .andDo ( print ( ) ).andExpect ( status ( ).isInternalServerError () )
+                .andReturn();
+
+
+        mockMvc.perform ( get ( "/api/v1/superhero/{id}" ,111) )
+                .andDo ( print ( ) ).andExpect ( status ( ).isNotFound () )
                 .andReturn();
 
 //        Collections.sort ( expected, Comparator.comparing ( Superhero::getId ) );
@@ -69,8 +79,11 @@ public class ApplicationTests {
 
         //     AssertEqualsForExpectedLists ( expected, actualRecords );
 
-//        mockMvc.perform ( get ( "/api/v1/superheros-with-id" ) )
-//                .andDo ( print ( ) ).andExpect ( status ( ).isOk ( ) );
+        mockMvc.perform ( get ( "/api/v1/superheros-with-id" ) )
+                .andDo ( print ( ) ).andExpect ( status ( ).isOk ( ) );
+
+        mockMvc.perform ( get ( "/api/v1/superheros" ) )
+                .andDo ( print ( ) ).andExpect ( status ( ).isOk ( ) );
 
     }
 
@@ -78,7 +91,9 @@ public class ApplicationTests {
         assertThat(expected.size ()).isEqualTo(actualRecords.size ());
         for (int i = 0; i < expected.size(); i++) {
             Assert.assertTrue(new ReflectionEquals ( expected.get(i), "id","associationList","powerList",  "weaponList").matches( actualRecords.get(i)));
-            AssertEqualsForEachAttributes( expected.get(i).getAssociationList (),actualRecords.get ( i).getAssociationList ());
+            AssertEqualsForEachAttributes( new ArrayList<>(expected.get(i).getAssociationList()), new ArrayList<>(actualRecords.get(i).getAssociationList ()));
+            AssertEqualsForEachAttributes( new ArrayList<>(expected.get(i).getWeaponList ()), new ArrayList<>(actualRecords.get(i).getWeaponList()));
+            AssertEqualsForEachAttributes( new ArrayList<>(expected.get(i).getPowerList ()), new ArrayList<>(actualRecords.get(i).getPowerList ()));
         }
     }
 

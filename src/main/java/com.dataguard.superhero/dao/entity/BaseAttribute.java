@@ -15,10 +15,8 @@ import java.beans.ConstructorProperties;
 import java.util.Objects;
 
 @Getter
-@Setter
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 @MappedSuperclass
 public class BaseAttribute {
 
@@ -35,22 +33,18 @@ public class BaseAttribute {
     @Column(name = "NAME")
     private String name;
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass ( ) != o.getClass ( )) return false;
-        BaseAttribute that = (BaseAttribute) o;
-        return id == that.getId ( ) && superhero.equals ( that.getSuperhero ( ) );
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash ( id, superhero );
-    }
-
-//    public BaseAttribute( int id,  String name) {
-//        this.id = id;
-//        this.name = name;
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass ( ) != o.getClass ( )) return false;
+//        BaseAttribute that = (BaseAttribute) o;
+//        return id == that.getId ( ) && superhero.equals ( that.getSuperhero ( ) );
 //    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash ( id, superhero );
+//    }
+
 }

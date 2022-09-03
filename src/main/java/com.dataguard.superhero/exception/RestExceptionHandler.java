@@ -34,14 +34,18 @@ public class RestExceptionHandler {
         }
         return restErrorResponse;
     }
-    @ResponseBody
     @ExceptionHandler(value = {SuperheroNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorDTO handleException(SuperheroNotFoundException orderNotFoundException) {
-        log.error(orderNotFoundException.getMessage(), orderNotFoundException);
-        return ErrorDTO.builder()
-                .code(HttpStatus.NOT_FOUND.getReasonPhrase())
-                .message(orderNotFoundException.getMessage())
-                .build();
+    public RestErrorResponse handleException(SuperheroNotFoundException ex) {
+        log.error("SuperheroNotFoundException was uncaught by application: ", ex);
+        return new RestErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public RestErrorResponse handleException(Exception ex) {
+        log.error("Exception was uncaught by application: ", ex);
+        return new RestErrorResponse(ex.getMessage());
     }
 }

@@ -4,7 +4,14 @@ import com.dataguard.superhero.dao.entity.Superhero;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface SuperheroRepository extends JpaRepository<Superhero, Integer> {
+import java.util.Optional;
 
+@Repository
+public interface SuperheroRepository extends JpaRepository<Superhero, Long> {
+
+    Optional<Superhero> findByName(String name);
+
+    Optional<Superhero> findByAlias(String alias);
+
+    Optional<Superhero> findByAliasAndName(String alias, String name);
 }

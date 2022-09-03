@@ -26,14 +26,19 @@ public class SuperheroDTO {
     private List<String> powerList;
 
     public void setWeaponList(String... strings) {
-        this.weaponList = Arrays.stream ( strings ).collect ( Collectors.toList ( ) );
+        this.weaponList = stringsToList ( strings );
     }
-
     public void setAssociationList(String... strings) {
-        this.associationList = Arrays.stream ( strings ).collect ( Collectors.toList ( ) );
+        this.associationList = stringsToList ( strings );
     }
 
     public void setPowerList(String... strings) {
-        this.powerList = Arrays.stream( strings ).collect( Collectors.toList());
+        this.powerList = stringsToList ( strings );
     }
+
+
+    private List<String> stringsToList(String[] strings) {
+        return Arrays.stream ( strings ).collect ( Collectors.toList ( ) );
+    }
+
 }
