@@ -121,7 +121,9 @@ The REST service must expose the `/api/v1/superheros` API;
 ## Commands
 
 1- Run integration tests which success %96 code coverage
+
 2- Dockerfile can be used to run program in a container
 
 docker build -t getting-started .
+
 docker run -dp 3000:3000 getting-started
