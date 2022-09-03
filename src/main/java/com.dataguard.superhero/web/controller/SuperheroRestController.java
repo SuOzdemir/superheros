@@ -94,9 +94,9 @@ public class SuperheroRestController {
     })
 
     @PostMapping (value="/superhero/{id}/{type}/{name}")
-    public ResponseEntity< SuperheroDTO> addAttributeSuperhero( @NotNull @PathVariable Long id,
+    public ResponseEntity< SuperheroDTO> addAttributeSuperhero(@PathVariable  @NotNull Long id,
                                                                          @PathVariable  @Valid @Type String type,
-                                                                        @NotNull @PathVariable String name) {
+                                                                          @PathVariable @NotNull String name) {
         log.info ( " To Superhero with id: {} , Adding \"{}\"  to {}s list is requested ",id,name,type);
         SuperheroDTO superheroDTO = superheroService.addAttributeSuperhero ( id,type, name);
         return ResponseEntity.status ( HttpStatus.OK ).body ( superheroDTO );
