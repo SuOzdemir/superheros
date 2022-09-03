@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class SuperheroDataMapper {
-   public Superhero createSuperHeroFromRequestDTO(SuperheroDTO superheroRequestDTO) {
+   public Superhero convertSuperHeroFromRequestDTO(SuperheroDTO superheroRequestDTO) {
 
       Superhero superhero = Superhero.builder ( )
               .name ( superheroRequestDTO.getName ( ) )
@@ -29,7 +29,7 @@ public class SuperheroDataMapper {
       return superhero;
    }
 
-   public SuperheroDTO createDTOfromSuperhero(Superhero superhero) {
+   public SuperheroDTO convertDTOFromSuperhero(Superhero superhero) {
 
       SuperheroDTO superheroDTO = SuperheroDTO.builder ( )
               .name ( superhero.getName ( ) )
@@ -50,9 +50,10 @@ public class SuperheroDataMapper {
       return superheroDTO;
    }
 
-   public List<SuperheroDTO> convertDTOAsList(List<Superhero> superheroList) {
+   public List<SuperheroDTO> convertDTOListToSuperheroList(List<Superhero> superheroList) {
       return superheroList.stream ( )
-              .map ( (superhero) -> createDTOfromSuperhero ( superhero ) )
+              .map ( this::convertDTOFromSuperhero )
               .collect ( Collectors.toList ( ) );
    }
+
 }

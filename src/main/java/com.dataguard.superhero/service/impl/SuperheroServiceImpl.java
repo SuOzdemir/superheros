@@ -6,6 +6,7 @@ import com.dataguard.superhero.exception.SuperheroNotFoundException;
 import com.dataguard.superhero.mapper.SuperheroDataMapper;
 import com.dataguard.superhero.service.SuperheroService;
 import com.dataguard.superhero.web.SuperheroAttributeType;
+import com.dataguard.superhero.web.controller.requestDTO.SuperheroBaseDTO;
 import com.dataguard.superhero.web.controller.requestDTO.SuperheroDTO;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
@@ -26,7 +27,7 @@ public class SuperheroServiceImpl implements SuperheroService {
     @Override
     public Superhero createSuperhero(SuperheroDTO superheroRequestDTO) {
 
-        Superhero superhero = mapper.createSuperHeroFromRequestDTO ( superheroRequestDTO );
+        Superhero superhero = mapper.convertSuperHeroFromRequestDTO ( superheroRequestDTO );
 
         return superheroDao.saveSuperhero ( superhero );
     }
@@ -38,7 +39,7 @@ public class SuperheroServiceImpl implements SuperheroService {
 
         emptyCheck ( superheroList );
 
-        return mapper.convertDTOAsList ( superheroList );
+        return mapper.convertDTOListToSuperheroList ( superheroList );
 
     }
 
@@ -55,31 +56,81 @@ public class SuperheroServiceImpl implements SuperheroService {
     }
 
     @Override
-    public Superhero getSuperheroById(Long id) {
-        return superheroDao.getSuperheroById(id);
-    }
+    public Superhero getSuperHeroById(Long id) {
 
-    @Override
-    public Superhero getSuperheroByNameOrAlias(String name, String alias) {
+        if ((id == null || id == 0L))
+            throw new InvalidParameterException ( " Id parameter is required" );
 
-        if (Strings.isEmpty ( name ) && Strings.isEmpty ( alias ))
-            throw new InvalidParameterException ( " At least one parameter is required" );
-
-        return superheroDao.getSuperHeroByNameOrAlias ( name, alias );
-
+        return superheroDao.getSuperheroById ( id);
     }
 
     @Override
     public SuperheroDTO addAttributeSuperhero(Long id, String typeStr, String name) {
 
-        SuperheroAttributeType type = SuperheroAttributeType.findByName ( typeStr )
-                .orElseThrow ( () -> new InvalidParameterException ( "type parameter is wrong " + typeStr ) );
+        SuperheroAttributeType type = getTypeWithValidating ( typeStr );
 
-        Superhero superhero = getSuperheroById ( id );
+        Superhero superhero = superheroDao.getSuperheroById ( id );
 
         superhero.addAttributeInDifferentType ( type, name );
 
-        return mapper.createDTOfromSuperhero ( superheroDao.saveSuperhero ( superhero ) );
+        return mapper.convertDTOFromSuperhero ( superheroDao.saveSuperhero ( superhero ) );
+    }
+
+
+   @Override
+    public SuperheroDTO removeAttributeSuperhero(Long id, String typeStr, String name) {
+
+        SuperheroAttributeType type = getTypeWithValidating ( typeStr );
+
+        Superhero superhero = superheroDao.getSuperheroById ( id );
+
+        superhero.removeAttributeInDifferentType ( type, name );
+
+        return mapper.convertDTOFromSuperhero ( superheroDao.saveSuperhero ( superhero ) );
+    }
+
+
+    @Override
+    public SuperheroDTO putAttributeListToSuperhero(Long id, String typeStr, List<String> attributeList) {
+
+        SuperheroAttributeType type = getTypeWithValidating ( typeStr );
+
+        Superhero superhero = superheroDao.getSuperheroById ( id );
+
+        superhero.addAttributeListInDifferentType ( type, attributeList );
+
+        superheroDao.saveSuperhero ( superhero );
+
+        return mapper.convertDTOFromSuperhero ( superheroDao.saveSuperhero ( superhero ) );
+    }
+
+    @Override
+    public SuperheroDTO updateSuperhero(Long id , SuperheroBaseDTO superheroBaseDTO) {
+
+        Superhero superhero = superheroDao.getSuperheroById ( id );
+
+        if ( !Strings.isEmpty ( superheroBaseDTO.getName() ))
+            superhero.setName ( superheroBaseDTO.getName()  );
+
+        if ( !Strings.isEmpty ( superheroBaseDTO.getAlias ()  ))
+            superhero.setName ( superheroBaseDTO.getAlias ()  );
+
+        if ( !Strings.isEmpty (superheroBaseDTO.getOrigin ()  ))
+            superhero.setName ( superhero.getOrigin () );
+
+         superheroDao.saveSuperhero ( superhero );
+
+         return mapper.convertDTOFromSuperhero (  superhero );
+    }
+
+    @Override
+    public void deleteSuperhero(Long id) {
+        superheroDao.deleteSuperhero ( id );
+    }
+
+    private SuperheroAttributeType getTypeWithValidating(String typeStr) {
+        return SuperheroAttributeType.findByName ( typeStr )
+                .orElseThrow ( () -> new InvalidParameterException ( "type parameter is wrong " + typeStr ) );
     }
 
     private void emptyCheck(List<Superhero> superheroList) {

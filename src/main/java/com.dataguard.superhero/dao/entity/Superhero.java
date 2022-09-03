@@ -15,24 +15,18 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "superheros")
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,    property = "id")
 public class Superhero {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "Id")
     private long id;
 
-    @Column(name = "alias", unique = true)
     @NotBlank
     private String alias;
 
-    @Column(name = "name", unique = true)
     @NotBlank
     private String name;
 
-    @Column(name = "origin")
     private String origin;
 
     @OneToMany(mappedBy = "superhero", cascade = CascadeType.ALL)
@@ -76,6 +70,20 @@ public class Superhero {
         }
     }
 
+    public void removeAttributeInDifferentType(SuperheroAttributeType type, String nameParam) {
+        switch (type) {
+            case ASSOCIATION:
+                this.associationList.removeIf ( association -> association.getName ( ).equals ( nameParam ) );
+                break;
+            case WEAPON:
+                this.weaponList.removeIf ( weapon -> weapon.getName ( ).equals ( nameParam ) );
+                break;
+            case POWER:
+                this.powerList.removeIf ( power -> power.getName ( ).equals ( nameParam ) );
+                break;
+        }
+    }
+
     private SuperheroPower powerFrom(String name) {
         return SuperheroPower.builder ( ).name ( name ).superhero ( this ).build ( );
     }
@@ -86,5 +94,19 @@ public class Superhero {
 
     private SuperheroAssociation associationFrom(String name) {
         return SuperheroAssociation.builder ( ).name ( name ).superhero ( this ).build ( );
+    }
+
+    public void addAttributeListInDifferentType(SuperheroAttributeType type, List<String> attributeList) {
+        switch (type) {
+            case ASSOCIATION:
+                setAssociationList ( attributeList );
+                break;
+            case WEAPON:
+                setWeaponList ( attributeList );
+                break;
+            case POWER:
+                setPowerList ( attributeList );
+                break;
+        }
     }
 }

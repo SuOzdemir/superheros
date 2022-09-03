@@ -9,10 +9,14 @@ import javax.validation.ConstraintValidatorContext;
 public class SuperheroTypeValidator implements ConstraintValidator<Type, String> {
 
     @Override
+    public void initialize(Type typeConstraint) {
+    }
+
+    @Override
     public boolean isValid(String typeStr, ConstraintValidatorContext constraintValidatorContext) {
-        if(SuperheroAttributeType.findByName ( typeStr ).isPresent ())
-            constraintValidatorContext.buildConstraintViolationWithTemplate ( "type parameter is wrong : " + typeStr  ).
-                    addConstraintViolation ();
+        if (SuperheroAttributeType.findByName ( typeStr ).isPresent ( ))
+            constraintValidatorContext.buildConstraintViolationWithTemplate ( "type parameter is wrong : " + typeStr ).
+                    addConstraintViolation ( );
         return true;
     }
 }

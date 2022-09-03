@@ -1,25 +1,19 @@
 package com.dataguard.superhero.web.controller.requestDTO;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Builder
+//@Data
 @Getter
-public class SuperheroDTO {
-
-    @NotBlank
-    private String alias;
-
-    @NotBlank
-    private String name;
-
-    private String origin;
+@Setter
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+//@EqualsAndHashCode(callSuper = true)
+public class SuperheroDTO extends SuperheroBaseDTO {
 
     @Singular("weapon")
     private List<String> weaponList;
@@ -36,7 +30,6 @@ public class SuperheroDTO {
     public void setAssociationList(String... strings) {
         this.associationList = stringsToList ( strings );
     }
-
     public void setPowerList(String... strings) {
         this.powerList = stringsToList ( strings );
     }
