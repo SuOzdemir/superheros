@@ -1,6 +1,5 @@
 ## Environment:
-- Java version: 1531522701000
-- Maven version: 3.*
+- Java version: Open JDK 14.02
 - Spring Boot version: 2.2.1.RELEASE
 
 ## Description:
