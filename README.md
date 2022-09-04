@@ -5,7 +5,7 @@
 ## Description:
 
 To show capabilities:
-- Integration Tests are written in the high COVERAGE
+- Integration Tests are written with %95 class code coverage
 - SwaggerUI is added
 - Global ExceptionHandling mechanism is added. 
 - ConstraintValidator is used in Custom Annotation declaration.
