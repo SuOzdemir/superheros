@@ -1,5 +1,6 @@
 package com.dataguard.superhero.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,6 +18,7 @@ public class BaseAttribute {
     private long id;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     private Superhero superhero;
 
     private String name;
