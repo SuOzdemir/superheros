@@ -125,4 +125,4 @@ The REST service must expose the `/api/v1/superheros` API;
 
 docker build -t superheros .
 
-docker container run -it superheros
+docker container run  -p 8080:8080 superheros
