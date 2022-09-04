@@ -53,26 +53,13 @@ public class SuperheroServiceImpl implements SuperheroService {
         }
     }
 
-//    @Override
-//    public List<Superhero> getAllSuperheroesWithIDS() {
-//
-//      //  List<Superhero> superheroList = superheroDao.getAllSuperheroes ( );
-//
-//
-//        return superheroList;
-//    }
-
     @Override
     public Superhero getSuperHeroById(Long id) {
-
-        if ((id == null || id == 0L))
-            throw new InvalidParameterException ( " Id parameter is required" );
-
         return superheroDao.getSuperheroById ( id );
     }
 
     @Override
-    public SuperheroDTO addAttributeSuperhero(Long id, String typeStr, String name) {
+    public Superhero addAttributeSuperhero(Long id, String typeStr, String name) {
 
         SuperheroAttributeType type = getTypeWithValidating ( typeStr );
 
@@ -80,12 +67,12 @@ public class SuperheroServiceImpl implements SuperheroService {
 
         superhero.addAttributeInDifferentType ( type, name );
 
-        return SuperheroDTO.of ( superheroDao.saveSuperhero ( superhero ) );
+        return  superheroDao.saveSuperhero ( superhero ) ;
     }
 
 
    @Override
-    public SuperheroDTO removeAttributeSuperhero(Long id, String typeStr, String name) {
+    public Superhero removeAttributeSuperhero(Long id, String typeStr, String name) {
 
         SuperheroAttributeType type = getTypeWithValidating ( typeStr );
 
@@ -93,12 +80,12 @@ public class SuperheroServiceImpl implements SuperheroService {
 
         superhero.removeAttributeInDifferentType ( type, name );
 
-       return SuperheroDTO.of ( superheroDao.saveSuperhero ( superhero ) );
+       return  superheroDao.saveSuperhero ( superhero );
     }
 
 
     @Override
-    public SuperheroDTO putAttributeListToSuperhero(Long id, String typeStr, List<String> attributeList) {
+    public Superhero putAttributeListToSuperhero(Long id, String typeStr, List<String> attributeList) {
 
         SuperheroAttributeType type = getTypeWithValidating ( typeStr );
 
@@ -106,13 +93,11 @@ public class SuperheroServiceImpl implements SuperheroService {
 
         superhero.addAttributeListInDifferentType ( type, attributeList );
 
-        superheroDao.saveSuperhero ( superhero );
-
-        return SuperheroDTO.of ( superheroDao.saveSuperhero ( superhero ) );
+        return superheroDao.saveSuperhero ( superhero ) ;
     }
 
     @Override
-    public SuperheroDTO updateSuperhero(Long id , SuperheroBaseDTO superheroBaseDTO) {
+    public Superhero updateSuperhero(Long id , SuperheroBaseDTO superheroBaseDTO) {
 
         Superhero superhero = superheroDao.getSuperheroById ( id );
 
@@ -125,9 +110,7 @@ public class SuperheroServiceImpl implements SuperheroService {
         if ( !Strings.isEmpty (superheroBaseDTO.getOrigin ()  ))
             superhero.setName ( superhero.getOrigin () );
 
-         superheroDao.saveSuperhero ( superhero );
-
-        return SuperheroDTO.of ( superhero );
+        return  superheroDao.saveSuperhero ( superhero );
     }
 
     @Override

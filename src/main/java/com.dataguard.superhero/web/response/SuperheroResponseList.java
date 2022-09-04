@@ -42,13 +42,11 @@ public class SuperheroResponseList {
 
     @Schema(description = "The meeting's participants list")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<SuperheroDTO> superheroList;
+    private List<Superhero> superheroList;
 
     public static SuperheroResponseList of(Page<Superhero> pagedResult) {
         return SuperheroResponseList.builder()
-                .superheroList(pagedResult.getContent().stream()
-                        .map( SuperheroDTO::of )
-                        .collect( Collectors.toList()))
+                .superheroList(pagedResult.getContent())
                 .pageCount(pagedResult.getTotalPages())
                 .pageNumber(pagedResult.getNumber())
                 .pageSize(pagedResult.getSize())

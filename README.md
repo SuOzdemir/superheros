@@ -34,11 +34,6 @@ Example of a superhero DTO data JSON object:
 }
 ```
 
-
-
-![alt text](src/main/resources/static/classDiagram.png))
-
-
 ## API Reference:
 The REST service must expose the `/api/v1/superheros` API;
 
@@ -62,26 +57,19 @@ The REST service must expose the `/api/v1/superheros` API;
 **POST** request to `/api/v1/superheros`:
 
 - creates a new superhero
-- expects a JSON superhero object with an id property as a body payload. 
+- expects a JSON superheroDTO object without an id property as a request entity
 - adds the given superhero object a unique long id. The first created superhero has id 1, 
   the second one 2, and so on.
-
-- The task requires structural and extendable code. So the collections in the superhero
-  like weapon,power and association are designed to be an object List instead of String List.
-- there is a validation for the attributes: name and alias. They should not be blank.(empty or null)
+- name and alias should not be blank.(empty or null)
 - the response code is 201, and the response body is the created superhero object
 
 **PATCH** request to `/api/v1/superheros/id`:
 
-- updates partially, name,alias and origin variables. If any of them is left blank it is not updated
-- expects a JSON superheroDTO object without an id property as a body payload.
-- adds the given superhero object a unique long id. The first created superhero has id 1,
-  the second one 2, and so on.
-
-- The task requires structural and extendable code. So the collections in the superhero
-  like weapon,power and association are designed to be an object List instead of String List.
-- there is a validation for the attributes: name and alias. They should not be blank.(empty or null)
-- the response code is 201, and the response body is the created superhero object
+- updates partially, name,alias and origin variables. 
+- If any of them is left blank it is not updated
+- expects a JSON superheroBaseDTO object .
+- Name and alias should not be blank.(empty or null)
+- the response code is 200
 
 **DELETE** request to `/api/v1/superheros/id`:
 
@@ -94,14 +82,14 @@ The REST service must expose the `/api/v1/superheros` API;
 
 - changes the attribute lists exactly with the parameter list
 - expects a string List. removes the current ones. converts the strings taken as parameters to the object list.
-- return superhero DTO object without id properties as a body payload.
+- return superhero object as a body payload.
 
 
 **POST** request to `/api/v1/superheros/{id]/attributes/{type}/name`:
 
 - adds an attribute lists exactly with the parameter name
 - expects id of superhero, type of attribute and name of attribute
-- return superhero DTO object without id properties as a body payload.
+- return superhero object as a body payload.
 
 
 **DELETE** request to `/api/v1/superheros/{id]/attributes/{type}/name`:
@@ -119,7 +107,7 @@ The REST service must expose the `/api/v1/superheros` API;
 
 ## Commands
 
-1- Run integration tests which success %96 code coverage
+1- Run integration tests which success %95 code coverage
 
 2- Dockerfile can be used to run program in a container. Move to Dockerfile directory from command line.
 

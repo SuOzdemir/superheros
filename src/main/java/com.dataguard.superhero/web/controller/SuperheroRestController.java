@@ -26,8 +26,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-import static com.dataguard.superhero.dao.constant.ApiPathValues.*;
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -36,6 +34,10 @@ import static com.dataguard.superhero.dao.constant.ApiPathValues.*;
 
 public class SuperheroRestController {
 
+    public static final String SUPERHEROS_PATH = "/superheros";
+    public static final String SUPERHEROS_ID_PATH = "/superheros/{id}";
+    public static final String SUPERHEROS_ID_PUT_ATTRIBUTE_PATH = "/superheros/{id}/attributes/{type}";
+    public static final String SUPERHEROS_ID_ATTRIBUTE_PATH = "/superheros/{id}/attributes/{type}/{name}";
     private final SuperheroService superheroService;
 
     @PostMapping(value = SUPERHEROS_PATH, consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -62,7 +64,7 @@ public class SuperheroRestController {
 
     @GetMapping(value = SUPERHEROS_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = SuperheroDTO.class))})})
+            @Content(mediaType = "application/json", schema = @Schema(implementation = SuperheroResponseList.class))})})
     @Operation(summary = "Get All Superheros ")
     public ResponseEntity<SuperheroResponseList> getAllSuperheroes(   @Parameter(description = "The page number of the current results")
                                                                           @Min(value = 0)
@@ -76,24 +78,6 @@ public class SuperheroRestController {
          SuperheroResponseList superheroResponseList = superheroService.getAllSuperheroes (pageNumber, pageSize );
         return ResponseEntity.status ( HttpStatus.OK ).body ( superheroResponseList );
     }
-
-//    @GetMapping(value = SUPERHEROS_DETAILS_PATH,
-//            produces = MediaType.APPLICATION_JSON_VALUE)
-//    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK", content = {
-//            @Content(mediaType = "application/json", schema = @Schema(implementation = Superhero.class))})})
-//    @Operation(summary = "Get All Superheros with ID and attributes with ID")
-//    public SuperheroResponseList getAllSuperheroesWithIDs(  @Parameter(description = "The page number of the current results")
-//                                                                          @Min(value = 0)
-//                                                                          @RequestParam(name = "page_number", defaultValue = "0") Integer pageNumber,
-//
-//                                                                      @Parameter(description = "The number of records returned with a single API call")
-//                                                                          @RequestParam(name = "page_size", defaultValue = "10")
-//                                                                          @Min(value = 1)
-//                                                                          @Max(value = 500, message = "page_size has to be less than or equal to 500") Integer pageSize) {
-//        log.info ( " Getting all superheros with IDs is requested " );
-//        SuperheroResponseList superheroList = superheroService.getAllSuperheroesWithIDS (pageNumber,pageSize );
-//        return ResponseEntity.status ( HttpStatus.OK ).body ( superheroList );
-//    }
 
 
     @DeleteMapping(value = SUPERHEROS_ID_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -109,54 +93,54 @@ public class SuperheroRestController {
     @PatchMapping(value = SUPERHEROS_ID_PATH, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = SuperheroDTO.class))})})
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Superhero.class))})})
 
     @Operation(summary = "Changes superhero's some attributes limited with (name,alias or origin attributes)")
-    public ResponseEntity<SuperheroDTO> updateSuperHero(@Parameter(description = "superhero Id") @PathVariable @NotNull Long id, @RequestBody @NotNull SuperheroBaseDTO superheroBaseDTO) {
+    public ResponseEntity<Superhero> updateSuperHero(@Parameter(description = "superhero Id") @PathVariable @NotNull Long id, @RequestBody @NotNull SuperheroBaseDTO superheroBaseDTO) {
         log.info ( " Change Superhero with id: {} - {} is requested ", id, superheroBaseDTO.toString ( ) );
-        SuperheroDTO superheroDTO = superheroService.updateSuperhero ( id, superheroBaseDTO );
-        return ResponseEntity.status ( HttpStatus.OK ).body ( superheroDTO );
+        Superhero superhero = superheroService.updateSuperhero ( id, superheroBaseDTO );
+        return ResponseEntity.status ( HttpStatus.OK ).body ( superhero );
     }
 
     @PutMapping(value = SUPERHEROS_ID_PUT_ATTRIBUTE_PATH, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = SuperheroDTO.class))})})
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Superhero.class))})})
 
     @Operation(summary = "Changes superhero's attributes with the exact set of attributes.Removes not exists, adds new ones")
-    public ResponseEntity<SuperheroDTO> putAttributeListToSuperhero(@PathVariable @NotNull Long id,
-                                                                    @PathVariable @Valid @Type String type,
-                                                                    @RequestBody List<String> attributeList) {
+    public ResponseEntity<Superhero> putAttributeListToSuperhero(@PathVariable @NotNull Long id,
+                                                                 @PathVariable @Valid @Type String type,
+                                                                 @RequestBody List<String> attributeList) {
         log.info ( " To Superhero with id: {} , Change {}s, with exact list \"{}\"  is requested ", id, type, String.join ( " ", attributeList ) );
-        SuperheroDTO superheroDTO = superheroService.putAttributeListToSuperhero ( id, type, attributeList );
-        return ResponseEntity.status ( HttpStatus.OK ).body ( superheroDTO );
+        Superhero superhero = superheroService.putAttributeListToSuperhero ( id, type, attributeList );
+        return ResponseEntity.status ( HttpStatus.OK ).body ( superhero );
     }
 
     @PostMapping(value = SUPERHEROS_ID_ATTRIBUTE_PATH,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = SuperheroDTO.class))})})
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Superhero.class))})})
 
     @Operation(summary = "Add one power/weapon/association to a superhero")
-    public ResponseEntity<SuperheroDTO> addAttribute(@Parameter(description = "superhero Id") @PathVariable @NotNull Long id,
-                                                     @Parameter(description = "choose one of weapon/power/association") @PathVariable @Valid @Type String type,
-                                                     @Parameter(description = "attribute name")  @PathVariable @NotNull String name) {
+    public ResponseEntity<Superhero> addAttribute(@Parameter(description = "superhero Id") @PathVariable @NotNull Long id,
+                                                  @Parameter(description = "choose one of weapon/power/association") @PathVariable @Valid @Type String type,
+                                                  @Parameter(description = "attribute name") @PathVariable @NotNull String name) {
         log.info ( " To Superhero with id: {} , Adding \"{}\"  to {}s list is requested ", id, name, type );
-        SuperheroDTO superheroDTO = superheroService.addAttributeSuperhero ( id, type, name );
-        return ResponseEntity.status ( HttpStatus.OK ).body ( superheroDTO );
+        Superhero superhero = superheroService.addAttributeSuperhero ( id, type, name );
+        return ResponseEntity.status ( HttpStatus.OK ).body ( superhero );
     }
 
     @DeleteMapping(value = SUPERHEROS_ID_ATTRIBUTE_PATH,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = SuperheroDTO.class))})})
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Superhero.class))})})
 
     @Operation(summary = "Remove one power/weapon/association attribute from a superhero")
-    public ResponseEntity<SuperheroDTO> removeAttribute(@Parameter(description = "superhero Id") @PathVariable @NotNull Long id,
-                                                        @Parameter(description = "choose one of weapon/power/association") @PathVariable @Valid @Type String type,
-                                                        @Parameter(description = "attribute name") @PathVariable @NotNull String name) {
+    public ResponseEntity<Superhero> removeAttribute(@Parameter(description = "superhero Id") @PathVariable @NotNull Long id,
+                                                     @Parameter(description = "choose one of weapon/power/association") @PathVariable @Valid @Type String type,
+                                                     @Parameter(description = "attribute name") @PathVariable @NotNull String name) {
         log.info ( " To Superhero with id: {} , removing \"{}\"  from {}s list is requested ", id, name, type );
-        SuperheroDTO superheroDTO = superheroService.removeAttributeSuperhero ( id, type, name );
-        return ResponseEntity.status ( HttpStatus.OK ).body ( superheroDTO );
+        Superhero superhero = superheroService.removeAttributeSuperhero ( id, type, name );
+        return ResponseEntity.status ( HttpStatus.OK ).body ( superhero );
     }
 }

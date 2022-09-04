@@ -3,124 +3,96 @@ package com.dataguard.superhero.dao.entity;
 import com.dataguard.superhero.web.SuperheroAttributeType;
 import com.dataguard.superhero.web.request.SuperheroDTO;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Builder
 @Getter
-@Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder(toBuilder = true)
 @Entity
-public class Superhero {
+public class Superhero extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @ElementCollection
+    private List<String> weaponList;
 
-    @NotBlank
-    private String alias;
+    @ElementCollection
+    private List<String> associationList;
 
-    @NotBlank
-    private String name;
+    @ElementCollection
+    private List<String> powerList;
 
-    private String origin;
 
-    @OneToMany(mappedBy = "superhero", cascade = CascadeType.ALL)
-    @Singular("weapon")
-    private List<SuperheroWeapon> weaponList;
-
-    @OneToMany(mappedBy = "superhero", cascade = CascadeType.ALL)
-    @Singular("association")
-    private List<SuperheroAssociation> associationList;
-
-    @OneToMany(mappedBy = "superhero", cascade = CascadeType.ALL)
-    @Singular("power")
-    private List<SuperheroPower> powerList;
-
-    public void setWeaponList(List<String> strList) {
-        if (CollectionUtils.isEmpty ( strList)) return;
-        this.weaponList = strList.stream ( ).map ( this::weaponFrom ).collect ( Collectors.toList ( ) );
+    public void setWeapons(List<String> strList) {
+        this.weaponList = copyListIfExists ( strList );
     }
 
     public void setPowerList(List<String> strList) {
-        if (CollectionUtils.isEmpty ( strList)) return;
-        this.powerList = strList.stream ( ).map ( this::powerFrom ).collect ( Collectors.toList ( ) );
+        this.powerList = copyListIfExists ( strList );
     }
 
-    public void setAssociationList(List<String> strList) {
-        if (CollectionUtils.isEmpty ( strList)) return;
-        this.associationList = strList.stream ( ).map ( this::associationFrom ).collect ( Collectors.toList ( ) );
+    public void setAssociations(List<String> strList) {
+        associationList = copyListIfExists ( strList );
+    }
+
+    private List<String> copyListIfExists(List<String> strList) {
+        if (CollectionUtils.isEmpty ( strList ))  //checks both of null and  empty
+            return new ArrayList<> ( );
+        return new ArrayList<> ( strList );
     }
 
     public void addAttributeInDifferentType(SuperheroAttributeType type, String nameParam) {
+        List<String> attributeList = getAttributeList ( type );
+        attributeList.add ( nameParam );
+    }
+
+    private List<String> getAttributeList(SuperheroAttributeType type) {
         switch (type) {
             case ASSOCIATION:
-                this.associationList.add ( associationFrom ( nameParam ) );
-                break;
+                return this.associationList;
             case WEAPON:
-                this.weaponList.add ( weaponFrom ( nameParam ) );
-                break;
+                return this.weaponList;
             case POWER:
-                this.powerList.add ( powerFrom ( nameParam ) );
-                break;
+                return this.powerList;
         }
+        return new ArrayList<> ( );
     }
 
     public void removeAttributeInDifferentType(SuperheroAttributeType type, String nameParam) {
+        List<String> attributeList = getAttributeList ( type );
+        attributeList.remove ( nameParam );
+    }
+
+
+    public void addAttributeListInDifferentType(SuperheroAttributeType type, List<String> attributeListParam) {
         switch (type) {
             case ASSOCIATION:
-                this.associationList.removeIf ( association -> association.getName ( ).equals ( nameParam ) );
+                associationList = copyListIfExists ( attributeListParam );
                 break;
             case WEAPON:
-                this.weaponList.removeIf ( weapon -> weapon.getName ( ).equals ( nameParam ) );
+                this.weaponList = copyListIfExists ( attributeListParam );
                 break;
             case POWER:
-                this.powerList.removeIf ( power -> power.getName ( ).equals ( nameParam ) );
+                this.powerList = copyListIfExists ( attributeListParam );
                 break;
         }
     }
 
-    private SuperheroPower powerFrom(String name) {
-        return SuperheroPower.builder ( ).name ( name ).superhero ( this ).build ( );
-    }
-
-    private SuperheroWeapon weaponFrom(String name) {
-        return SuperheroWeapon.builder ( ).name ( name ).superhero ( this ).build ( );
-    }
-
-    private SuperheroAssociation associationFrom(String name) {
-        return SuperheroAssociation.builder ( ).name ( name ).superhero ( this ).build ( );
-    }
-
-    public void addAttributeListInDifferentType(SuperheroAttributeType type, List<String> attributeList) {
-        switch (type) {
-            case ASSOCIATION:
-                setAssociationList ( attributeList );
-                break;
-            case WEAPON:
-                setWeaponList ( attributeList );
-                break;
-            case POWER:
-                setPowerList ( attributeList );
-                break;
-        }
-    }
     public static Superhero of(SuperheroDTO entity) {
 
-        Superhero superhero = Superhero.builder()
+        Superhero superhero = Superhero.builder ( )
                 .name ( entity.getName ( ) )
                 .alias ( entity.getAlias ( ) )
                 .origin ( entity.getOrigin ( ) )
-                .build();
+                .build ( );
 
-        superhero.setWeaponList ( entity.getWeaponList ( ) );
+        superhero.setWeapons ( entity.getWeaponList ( ) );
         superhero.setPowerList ( entity.getPowerList ( ) );
-        superhero.setAssociationList ( entity.getAssociationList ( ) );
+        superhero.setAssociations ( entity.getAssociationList ( ) );
 
 
         return superhero;
