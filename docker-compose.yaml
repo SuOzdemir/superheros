@@ -1,0 +1,16 @@
+superheros :
+  image: superheros
+  build:
+    context: ./
+    dockerfile: Dockerfile
+  ports:
+    - 8080:8080
+  volumes:
+    - /data/grades
+  restart: always
+  networks:
+        - common-network
+
+networks:
+  common-network:
+    driver: bridge

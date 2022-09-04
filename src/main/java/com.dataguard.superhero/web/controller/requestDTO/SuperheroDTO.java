@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 @Setter
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
-//@EqualsAndHashCode(callSuper = true)
 public class SuperheroDTO extends SuperheroBaseDTO {
 
     @Singular("weapon")
