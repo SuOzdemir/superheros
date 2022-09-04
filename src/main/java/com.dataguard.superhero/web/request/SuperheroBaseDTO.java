@@ -1,4 +1,4 @@
-package com.dataguard.superhero.web.controller.requestDTO;
+package com.dataguard.superhero.web.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

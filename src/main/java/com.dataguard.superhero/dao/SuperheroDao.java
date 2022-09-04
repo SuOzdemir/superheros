@@ -4,10 +4,11 @@ import com.dataguard.superhero.dao.entity.Superhero;
 import com.dataguard.superhero.dao.repository.SuperheroRepository;
 import com.dataguard.superhero.exception.SuperheroNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -18,8 +19,8 @@ public class SuperheroDao {
         return superheroRepository.save ( superhero );
     }
 
-    public List<Superhero> getAllSuperheroes() {
-        return superheroRepository.findAll ( );
+    public Page<Superhero> getAllSuperheroes(Pageable pageable) {
+        return superheroRepository.findAll ( pageable );
     }
 
     public Superhero getSuperheroById(@NotNull Long id) {

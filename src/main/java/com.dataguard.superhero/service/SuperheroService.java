@@ -1,8 +1,9 @@
 package com.dataguard.superhero.service;
 
 import com.dataguard.superhero.dao.entity.Superhero;
-import com.dataguard.superhero.web.controller.requestDTO.SuperheroBaseDTO;
-import com.dataguard.superhero.web.controller.requestDTO.SuperheroDTO;
+import com.dataguard.superhero.web.request.SuperheroBaseDTO;
+import com.dataguard.superhero.web.request.SuperheroDTO;
+import com.dataguard.superhero.web.response.SuperheroResponseList;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +13,9 @@ public interface SuperheroService {
 
     Superhero createSuperhero(SuperheroDTO superheroRequestDTO);
 
-    List<SuperheroDTO> getAllSuperheroes();
+    SuperheroResponseList getAllSuperheroes(int pageNumber, int pageSize);
 
-    List<Superhero> getAllSuperheroesWithIDS();
+ //   List<Superhero> getAllSuperheroesWithIDS();
 
     Superhero getSuperHeroById(Long id);
 

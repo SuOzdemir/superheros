@@ -1,6 +1,7 @@
 package com.dataguard.superhero.dao.entity;
 
 import com.dataguard.superhero.web.SuperheroAttributeType;
+import com.dataguard.superhero.web.request.SuperheroDTO;
 import lombok.*;
 import org.springframework.util.CollectionUtils;
 
@@ -108,5 +109,20 @@ public class Superhero {
                 setPowerList ( attributeList );
                 break;
         }
+    }
+    public static Superhero of(SuperheroDTO entity) {
+
+        Superhero superhero = Superhero.builder()
+                .name ( entity.getName ( ) )
+                .alias ( entity.getAlias ( ) )
+                .origin ( entity.getOrigin ( ) )
+                .build();
+
+        superhero.setWeaponList ( entity.getWeaponList ( ) );
+        superhero.setPowerList ( entity.getPowerList ( ) );
+        superhero.setAssociationList ( entity.getAssociationList ( ) );
+
+
+        return superhero;
     }
 }

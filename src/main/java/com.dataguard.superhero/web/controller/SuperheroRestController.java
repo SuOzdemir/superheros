@@ -3,8 +3,9 @@ package com.dataguard.superhero.web.controller;
 import com.dataguard.superhero.dao.entity.Superhero;
 import com.dataguard.superhero.service.SuperheroService;
 import com.dataguard.superhero.validation.Type;
-import com.dataguard.superhero.web.controller.requestDTO.SuperheroBaseDTO;
-import com.dataguard.superhero.web.controller.requestDTO.SuperheroDTO;
+import com.dataguard.superhero.web.request.SuperheroBaseDTO;
+import com.dataguard.superhero.web.request.SuperheroDTO;
+import com.dataguard.superhero.web.response.SuperheroResponseList;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,8 +21,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+
+import static com.dataguard.superhero.dao.constant.ApiPathValues.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,11 +36,6 @@ import java.util.List;
 
 public class SuperheroRestController {
 
-    public static final String SUPERHEROS_PATH = "/superheros";
-    public static final String SUPERHEROS_DETAILS_PATH = "/superheros/details";
-    public static final String SUPERHEROS_ID_PATH = "/superheros/{id}";
-    public static final String SUPERHEROS_ID_PUT_ATTRIBUTE_PATH = "/superheros/{id}/attributes/{type}";
-    public static final String SUPERHEROS_ID_ATTRIBUTE_PATH = "/superheros/{id}/attributes/{type}/{name}";
     private final SuperheroService superheroService;
 
     @PostMapping(value = SUPERHEROS_PATH, consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -64,22 +64,36 @@ public class SuperheroRestController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = SuperheroDTO.class))})})
     @Operation(summary = "Get All Superheros ")
-    public ResponseEntity<List<SuperheroDTO>> getAllSuperheroes() {
+    public ResponseEntity<SuperheroResponseList> getAllSuperheroes(   @Parameter(description = "The page number of the current results")
+                                                                          @Min(value = 0)
+                                                                          @RequestParam(name = "page_number", defaultValue = "0") Integer pageNumber,
+
+                                                                      @Parameter(description = "The number of records returned with a single API call")
+                                                                          @RequestParam(name = "page_size", defaultValue = "10")
+                                                                          @Min(value = 1)
+                                                                          @Max(value = 500, message = "page_size has to be less than or equal to 500") Integer pageSize ) {
         log.info ( " Getting all superheros is requested " );
-        List<SuperheroDTO> superheroDTOList = superheroService.getAllSuperheroes ( );
-        return ResponseEntity.status ( HttpStatus.OK ).body ( superheroDTOList );
+         SuperheroResponseList superheroResponseList = superheroService.getAllSuperheroes (pageNumber, pageSize );
+        return ResponseEntity.status ( HttpStatus.OK ).body ( superheroResponseList );
     }
 
-    @GetMapping(value = SUPERHEROS_DETAILS_PATH,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Superhero.class))})})
-    @Operation(summary = "Get All Superheros with ID and attributes with ID")
-    public ResponseEntity<List<Superhero>> getAllSuperheroesWithIDs() {
-        log.info ( " Getting all superheros with IDs is requested " );
-        List<Superhero> superheroList = superheroService.getAllSuperheroesWithIDS ( );
-        return ResponseEntity.status ( HttpStatus.OK ).body ( superheroList );
-    }
+//    @GetMapping(value = SUPERHEROS_DETAILS_PATH,
+//            produces = MediaType.APPLICATION_JSON_VALUE)
+//    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK", content = {
+//            @Content(mediaType = "application/json", schema = @Schema(implementation = Superhero.class))})})
+//    @Operation(summary = "Get All Superheros with ID and attributes with ID")
+//    public SuperheroResponseList getAllSuperheroesWithIDs(  @Parameter(description = "The page number of the current results")
+//                                                                          @Min(value = 0)
+//                                                                          @RequestParam(name = "page_number", defaultValue = "0") Integer pageNumber,
+//
+//                                                                      @Parameter(description = "The number of records returned with a single API call")
+//                                                                          @RequestParam(name = "page_size", defaultValue = "10")
+//                                                                          @Min(value = 1)
+//                                                                          @Max(value = 500, message = "page_size has to be less than or equal to 500") Integer pageSize) {
+//        log.info ( " Getting all superheros with IDs is requested " );
+//        SuperheroResponseList superheroList = superheroService.getAllSuperheroesWithIDS (pageNumber,pageSize );
+//        return ResponseEntity.status ( HttpStatus.OK ).body ( superheroList );
+//    }
 
 
     @DeleteMapping(value = SUPERHEROS_ID_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
