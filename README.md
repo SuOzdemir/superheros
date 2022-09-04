@@ -1,5 +1,7 @@
 ## Environment:
+
 - Java version: Open JDK 11.02
+- maven:3.8.3
 - Spring Boot version: 2.2.1.RELEASE
 
 ## Description:
@@ -110,6 +112,8 @@ The REST service must expose the `/api/v1/superheros` API;
 1- Run integration tests which success %95 code coverage
 
 2- Dockerfile can be used to run program in a container. Move to Dockerfile directory from command line.
+
+mvn clean install 
 
 docker build -t superheros .
 
